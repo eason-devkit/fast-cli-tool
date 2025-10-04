@@ -8,7 +8,10 @@
         mc:Ignorable="d"
         Title="Fast CLI Tool" Height="450" Width="800"
         Background="#252526" Foreground="White"
-        FontFamily="Consolas">
+        FontFamily="Consolas"
+        WindowStyle="None"
+        AllowsTransparency="True"
+        ResizeMode="CanResize">
     <Window.DataContext>
         <viewmodels:MainViewModel/>
     </Window.DataContext>
@@ -195,23 +198,140 @@
 
     </Window.Resources>
 
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+    <Border Background="#1E1E1E" CornerRadius="8">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-        <!-- Top Toolbar Area -->
-        <Border Grid.Row="0"
-                Background="#1E1E1E"
-                BorderBrush="{StaticResource BorderColor}"
-                BorderThickness="0,0,0,1"
-                Padding="10">
-            <Button Command="{Binding AddPathCommand}" Style="{StaticResource AddButtonStyle}"/>
-        </Border>
+            <!-- Custom Title Bar -->
+            <Border Grid.Row="0"
+                    Background="#1E1E1E"
+                    MouseLeftButtonDown="TitleBar_MouseLeftButtonDown"
+                    Height="35"
+                    CornerRadius="8,8,0,0">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- App Icon and Title -->
+                    <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="10,0">
+                        <TextBlock Text="📋" FontSize="16" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                        <TextBlock Text="Fast CLI Tool"
+                                   Foreground="White"
+                                   FontSize="13"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center"/>
+                    </StackPanel>
+
+                    <!-- Window Control Buttons -->
+                    <StackPanel Grid.Column="2" Orientation="Horizontal">
+                        <!-- Minimize Button -->
+                        <Button Click="MinimizeButton_Click"
+                                Width="45" Height="35"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Foreground="White"
+                                Content="—"
+                                FontSize="12"
+                                Cursor="Hand">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#3E3E42"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                        <!-- Maximize/Restore Button -->
+                        <Button Click="MaximizeButton_Click"
+                                Width="45" Height="35"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Foreground="White"
+                                Content="□"
+                                FontSize="14"
+                                Cursor="Hand">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border Background="{TemplateBinding Background}">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter Property="Background" Value="#3E3E42"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+
+                        <!-- Close Button -->
+                        <Button Click="CloseButton_Click"
+                                Width="45" Height="35"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                Foreground="White"
+                                Content="✕"
+                                FontSize="14"
+                                Cursor="Hand">
+                            <Button.Style>
+                                <Style TargetType="Button">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border x:Name="Border" Background="{TemplateBinding Background}" CornerRadius="0,8,0,0">
+                                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="Border" Property="Background" Value="#E81123"/>
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </StackPanel>
+                </Grid>
+            </Border>
+
+            <!-- Top Toolbar Area -->
+            <Border Grid.Row="1"
+                    Background="#1E1E1E"
+                    BorderBrush="{StaticResource BorderColor}"
+                    BorderThickness="0,0,0,1"
+                    Padding="10">
+                <Button Command="{Binding AddPathCommand}" Style="{StaticResource AddButtonStyle}"/>
+            </Border>
 
         <!-- Main Content Area -->
-        <Grid Grid.Row="1">
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="250"/>
                 <ColumnDefinition Width="*"/>
@@ -576,6 +696,7 @@
                     </StackPanel>
                 </Grid>
             </Border>
+            </Grid>
         </Grid>
-    </Grid>
+    </Border>
 </Window>
