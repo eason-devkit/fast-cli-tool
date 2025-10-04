@@ -428,7 +428,8 @@
                                        VerticalAlignment="Center"/>
 
                             <ComboBox Grid.Column="1"
-                                      SelectedItem="{Binding SelectedPathItem.SelectedCli, Mode=TwoWay}"
+                                      SelectedValue="{Binding SelectedPathItem.SelectedCli, Mode=TwoWay}"
+                                      SelectedValuePath="Content"
                                       FontSize="12"
                                       Padding="12,6"
                                       Background="#2D2D30"
