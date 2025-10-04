@@ -106,32 +106,25 @@
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
                         <Border x:Name="PathBorder"
-                                Background="{TemplateBinding Background}" 
+                                Background="{TemplateBinding Background}"
                                 CornerRadius="6"
                                 Padding="{TemplateBinding Padding}">
                             <Grid>
                                 <Grid.ColumnDefinitions>
                                     <ColumnDefinition Width="Auto"/>
                                     <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="Auto"/>
                                 </Grid.ColumnDefinitions>
                                 <!-- Folder Icon -->
-                                <TextBlock Grid.Column="0" 
-                                           Text="📁" 
-                                           FontSize="14" 
-                                           VerticalAlignment="Center" 
+                                <TextBlock Grid.Column="0"
+                                           Text="📁"
+                                           FontSize="14"
+                                           VerticalAlignment="Center"
                                            Margin="0,0,10,0"/>
                                 <!-- Path Name -->
-                                <TextBlock Grid.Column="1" 
-                                           Text="{TemplateBinding Content}" 
+                                <TextBlock Grid.Column="1"
+                                           Text="{TemplateBinding Content}"
                                            VerticalAlignment="Center"
                                            TextTrimming="CharacterEllipsis"/>
-                                <!-- Execute Icon -->
-                                <TextBlock Grid.Column="2" 
-                                           Text="▶" 
-                                           FontSize="10" 
-                                           VerticalAlignment="Center"
-                                           Opacity="0.6"/>
                             </Grid>
                         </Border>
                         <ControlTemplate.Triggers>
