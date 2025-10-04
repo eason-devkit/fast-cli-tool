@@ -36,6 +36,7 @@ namespace fast_cli_tool.ViewModels
         public ICommand SelectPathCommand { get; }
         public ICommand ExecuteCommand { get; }
         public ICommand RemovePathCommand { get; }
+        public ICommand OpenFolderCommand { get; }
 
         public MainViewModel()
         {
@@ -51,6 +52,7 @@ namespace fast_cli_tool.ViewModels
             SelectPathCommand = new RelayCommand<PathItem>(SelectPath);
             ExecuteCommand = new RelayCommand<PathItem>(Execute);
             RemovePathCommand = new RelayCommand<PathItem>(RemovePath);
+            OpenFolderCommand = new RelayCommand<PathItem>(OpenFolder);
         }
 
         private void SelectPath(PathItem pathItem)
@@ -173,6 +175,37 @@ namespace fast_cli_tool.ViewModels
                 _logService.LogError($"Error removing path: {pathItem.FullPath}", ex);
                 System.Windows.MessageBox.Show(
                     $"Error removing path: {ex.Message}\n\nCheck log file at:\n{_logService.GetLogFilePath()}",
+                    "Error",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error
+                );
+            }
+        }
+
+        private void OpenFolder(PathItem pathItem)
+        {
+            if (pathItem == null || !Directory.Exists(pathItem.FullPath))
+            {
+                _logService.LogWarning($"Cannot open folder - invalid path item");
+                return;
+            }
+
+            try
+            {
+                _logService.LogInfo($"Opening folder: {pathItem.FullPath}");
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "explorer.exe",
+                    Arguments = pathItem.FullPath,
+                    UseShellExecute = true
+                });
+                _logService.LogInfo("Folder opened successfully");
+            }
+            catch (Exception ex)
+            {
+                _logService.LogError($"Error opening folder: {pathItem.FullPath}", ex);
+                System.Windows.MessageBox.Show(
+                    $"Error opening folder: {ex.Message}\n\nCheck log file at:\n{_logService.GetLogFilePath()}",
                     "Error",
                     System.Windows.MessageBoxButton.OK,
                     System.Windows.MessageBoxImage.Error

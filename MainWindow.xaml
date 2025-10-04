@@ -341,12 +341,63 @@
                             </Style>
                         </StackPanel.Style>
 
-                        <!-- Header -->
-                        <TextBlock Text="{Binding SelectedPathItem.Name}"
-                                   Foreground="White"
-                                   FontSize="24"
-                                   FontWeight="SemiBold"
-                                   Margin="0,0,0,10"/>
+                        <!-- Header with Open Folder Button -->
+                        <Grid Margin="0,0,0,10">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+
+                            <TextBlock Grid.Column="0"
+                                       Text="{Binding SelectedPathItem.Name}"
+                                       Foreground="White"
+                                       FontSize="24"
+                                       FontWeight="SemiBold"
+                                       VerticalAlignment="Center"/>
+
+                            <Button Grid.Column="1"
+                                    Command="{Binding OpenFolderCommand}"
+                                    CommandParameter="{Binding SelectedPathItem}"
+                                    Background="#007ACC"
+                                    Foreground="White"
+                                    BorderThickness="0"
+                                    Padding="12,6"
+                                    Cursor="Hand"
+                                    ToolTip="Open Folder in Explorer">
+                                <Button.Style>
+                                    <Style TargetType="Button">
+                                        <Setter Property="Template">
+                                            <Setter.Value>
+                                                <ControlTemplate TargetType="Button">
+                                                    <Border Background="{TemplateBinding Background}"
+                                                            CornerRadius="4"
+                                                            Padding="{TemplateBinding Padding}">
+                                                        <StackPanel Orientation="Horizontal">
+                                                            <TextBlock Text="📂"
+                                                                       FontSize="14"
+                                                                       Margin="0,0,6,0"
+                                                                       VerticalAlignment="Center"/>
+                                                            <TextBlock Text="Open Folder"
+                                                                       FontSize="12"
+                                                                       Foreground="{TemplateBinding Foreground}"
+                                                                       VerticalAlignment="Center"/>
+                                                        </StackPanel>
+                                                    </Border>
+                                                    <ControlTemplate.Triggers>
+                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                            <Setter Property="Background" Value="#005A9E"/>
+                                                        </Trigger>
+                                                        <Trigger Property="IsPressed" Value="True">
+                                                            <Setter Property="Background" Value="#004578"/>
+                                                        </Trigger>
+                                                    </ControlTemplate.Triggers>
+                                                </ControlTemplate>
+                                            </Setter.Value>
+                                        </Setter>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </Grid>
 
                         <TextBlock Text="{Binding SelectedPathItem.FullPath}"
                                    Foreground="{StaticResource TextColor}"
