@@ -134,10 +134,11 @@ namespace fast_cli_tool.ViewModels
 
             try
             {
-                _logService.LogInfo($"Executing command in: {pathItem.FullPath}");
+                var cliCommand = pathItem.SelectedCli ?? "gemini.cmd";
+                _logService.LogInfo($"Executing {cliCommand} in: {pathItem.FullPath}");
                 Process.Start(new ProcessStartInfo
                 {
-                    FileName = "gemini.cmd",
+                    FileName = cliCommand,
                     WorkingDirectory = pathItem.FullPath,
                     UseShellExecute = true,
                     CreateNoWindow = false
