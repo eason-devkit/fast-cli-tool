@@ -8,7 +8,7 @@ namespace fast_cli_tool.Models
     {
         private string _name;
         private string _fullPath;
-        private string _selectedCli = "gemini.cmd";
+        private string _selectedCli = "claude.cmd";
 
         public string Name
         {
