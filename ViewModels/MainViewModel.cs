@@ -8,9 +8,9 @@ using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows.Input;
-using System.Windows.Forms;
 using fast_cli_tool.Models;
 using fast_cli_tool.Services;
+using Microsoft.Win32;
 
 namespace fast_cli_tool.ViewModels
 {
@@ -120,13 +120,13 @@ namespace fast_cli_tool.ViewModels
             {
                 _logService.LogInfo("Opening folder browser dialog");
 
-                var dialog = new System.Windows.Forms.FolderBrowserDialog();
-                dialog.Description = "Select a folder to add";
-                dialog.UseDescriptionForTitle = true;
+                var dialog = new OpenFolderDialog();
+                dialog.Title = "Select a folder to add";
+                dialog.Multiselect = false;
 
-                if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                if (dialog.ShowDialog() == true)
                 {
-                    var fullPath = dialog.SelectedPath;
+                    var fullPath = dialog.FolderName;
                     _logService.LogInfo($"Folder selected: {fullPath}");
 
                     if (string.IsNullOrWhiteSpace(fullPath) || !Directory.Exists(fullPath))
