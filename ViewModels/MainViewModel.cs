@@ -19,6 +19,8 @@ namespace fast_cli_tool.ViewModels
         private readonly DataService _dataService;
         private readonly LogService _logService;
         private PathItem? _selectedPathItem;
+        private string _searchText = string.Empty;
+        private ObservableCollection<PathItem> _allPathItems;
 
         public ObservableCollection<PathItem> PathItems { get; set; }
 
@@ -29,6 +31,17 @@ namespace fast_cli_tool.ViewModels
             {
                 _selectedPathItem = value;
                 OnPropertyChanged();
+            }
+        }
+
+        public string SearchText
+        {
+            get => _searchText;
+            set
+            {
+                _searchText = value;
+                OnPropertyChanged();
+                FilterPaths();
             }
         }
 
@@ -46,16 +59,17 @@ namespace fast_cli_tool.ViewModels
             _logService.LogInfo("Application started");
 
             var loadedPaths = _dataService.LoadPaths() ?? new List<PathItem>();
+            _allPathItems = new ObservableCollection<PathItem>(loadedPaths);
             PathItems = new ObservableCollection<PathItem>(loadedPaths);
 
             // 監聽每個 PathItem 的屬性變更
-            foreach (var item in PathItems)
+            foreach (var item in _allPathItems)
             {
                 item.PropertyChanged += PathItem_PropertyChanged;
             }
 
             // 監聽集合變更
-            PathItems.CollectionChanged += PathItems_CollectionChanged;
+            _allPathItems.CollectionChanged += PathItems_CollectionChanged;
 
             AddPathCommand = new RelayCommand(AddPath);
             SelectPathCommand = new RelayCommand<PathItem>(SelectPath);
@@ -90,8 +104,14 @@ namespace fast_cli_tool.ViewModels
             // 當 PathItem 的任何屬性變更時，自動保存
             try
             {
-                _dataService.SavePaths(PathItems);
+                _dataService.SavePaths(_allPathItems);
                 _logService.LogInfo($"PathItem property '{e.PropertyName}' changed, data saved");
+
+                // 如果是 Name 或 FullPath 變更，需要重新篩選
+                if (e.PropertyName == nameof(PathItem.Name) || e.PropertyName == nameof(PathItem.FullPath))
+                {
+                    FilterPaths();
+                }
             }
             catch (Exception ex)
             {
@@ -135,7 +155,7 @@ namespace fast_cli_tool.ViewModels
                         return;
                     }
 
-                    if (PathItems.Any(p => p.FullPath.Equals(fullPath, StringComparison.OrdinalIgnoreCase)))
+                    if (_allPathItems.Any(p => p.FullPath.Equals(fullPath, StringComparison.OrdinalIgnoreCase)))
                     {
                         _logService.LogWarning($"Path already exists: {fullPath}");
                         return;
@@ -149,8 +169,9 @@ namespace fast_cli_tool.ViewModels
                         FullPath = fullPath
                     };
 
-                    PathItems.Add(pathItem);
-                    _dataService.SavePaths(PathItems);
+                    _allPathItems.Add(pathItem);
+                    _dataService.SavePaths(_allPathItems);
+                    FilterPaths(); // 重新篩選以顯示新項目
                     _logService.LogInfo($"Path added successfully: {fullPath}");
                 }
                 else
@@ -210,8 +231,9 @@ namespace fast_cli_tool.ViewModels
             try
             {
                 _logService.LogInfo($"Removing path: {pathItem.FullPath}");
-                PathItems.Remove(pathItem);
-                _dataService.SavePaths(PathItems);
+                _allPathItems.Remove(pathItem);
+                _dataService.SavePaths(_allPathItems);
+                FilterPaths(); // 重新篩選以更新顯示
                 _logService.LogInfo("Path removed successfully");
             }
             catch (Exception ex)
@@ -254,6 +276,41 @@ namespace fast_cli_tool.ViewModels
                     System.Windows.MessageBoxButton.OK,
                     System.Windows.MessageBoxImage.Error
                 );
+            }
+        }
+
+        private void FilterPaths()
+        {
+            try
+            {
+                PathItems.Clear();
+
+                if (string.IsNullOrWhiteSpace(_searchText))
+                {
+                    // 顯示全部
+                    foreach (var item in _allPathItems)
+                    {
+                        PathItems.Add(item);
+                    }
+                }
+                else
+                {
+                    // 只搜尋資料夾名稱
+                    var filtered = _allPathItems.Where(p =>
+                        p.Name?.Contains(_searchText, StringComparison.OrdinalIgnoreCase) ?? false
+                    );
+
+                    foreach (var item in filtered)
+                    {
+                        PathItems.Add(item);
+                    }
+                }
+
+                _logService.LogInfo($"Filtered paths: {PathItems.Count} of {_allPathItems.Count} (search: '{_searchText}')");
+            }
+            catch (Exception ex)
+            {
+                _logService.LogError("Error filtering paths", ex);
             }
         }
 
