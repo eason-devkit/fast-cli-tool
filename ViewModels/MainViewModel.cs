@@ -48,11 +48,55 @@ namespace fast_cli_tool.ViewModels
             var loadedPaths = _dataService.LoadPaths() ?? new List<PathItem>();
             PathItems = new ObservableCollection<PathItem>(loadedPaths);
 
+            // 監聽每個 PathItem 的屬性變更
+            foreach (var item in PathItems)
+            {
+                item.PropertyChanged += PathItem_PropertyChanged;
+            }
+
+            // 監聽集合變更
+            PathItems.CollectionChanged += PathItems_CollectionChanged;
+
             AddPathCommand = new RelayCommand(AddPath);
             SelectPathCommand = new RelayCommand<PathItem>(SelectPath);
             ExecuteCommand = new RelayCommand<PathItem>(Execute);
             RemovePathCommand = new RelayCommand<PathItem>(RemovePath);
             OpenFolderCommand = new RelayCommand<PathItem>(OpenFolder);
+        }
+
+        private void PathItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
+        {
+            // 新增的項目要監聽屬性變更
+            if (e.NewItems != null)
+            {
+                foreach (PathItem item in e.NewItems)
+                {
+                    item.PropertyChanged += PathItem_PropertyChanged;
+                }
+            }
+
+            // 移除的項目要取消監聽
+            if (e.OldItems != null)
+            {
+                foreach (PathItem item in e.OldItems)
+                {
+                    item.PropertyChanged -= PathItem_PropertyChanged;
+                }
+            }
+        }
+
+        private void PathItem_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // 當 PathItem 的任何屬性變更時，自動保存
+            try
+            {
+                _dataService.SavePaths(PathItems);
+                _logService.LogInfo($"PathItem property '{e.PropertyName}' changed, data saved");
+            }
+            catch (Exception ex)
+            {
+                _logService.LogError($"Error saving paths after property change", ex);
+            }
         }
 
         private void SelectPath(PathItem pathItem)

@@ -7,7 +7,7 @@
         xmlns:viewmodels="clr-namespace:fast_cli_tool.ViewModels"
         mc:Ignorable="d"
         Title="Fast CLI Tool" Height="450" Width="800"
-        Background="#252526" Foreground="White"
+        Background="Transparent" Foreground="White"
         FontFamily="Consolas"
         WindowStyle="None"
         AllowsTransparency="True"
@@ -198,7 +198,7 @@
 
     </Window.Resources>
 
-    <Border Background="#1E1E1E" CornerRadius="8">
+    <Border Background="#1E1E1E" CornerRadius="8" ClipToBounds="True">
         <Grid>
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
@@ -364,8 +364,27 @@
                                     <Button Grid.Column="0"
                                             Content="{Binding Name}"
                                             Command="{Binding DataContext.SelectPathCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
-                                            CommandParameter="{Binding}"
-                                            Style="{StaticResource PathButtonStyle}"/>
+                                            CommandParameter="{Binding}">
+                                        <Button.Style>
+                                            <Style TargetType="Button" BasedOn="{StaticResource PathButtonStyle}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Value="True">
+                                                        <DataTrigger.Binding>
+                                                            <MultiBinding>
+                                                                <MultiBinding.Converter>
+                                                                    <local:EqualityConverter/>
+                                                                </MultiBinding.Converter>
+                                                                <Binding Path="DataContext.SelectedPathItem" RelativeSource="{RelativeSource AncestorType=ItemsControl}"/>
+                                                                <Binding Path="."/>
+                                                            </MultiBinding>
+                                                        </DataTrigger.Binding>
+                                                        <Setter Property="Background" Value="#007ACC"/>
+                                                        <Setter Property="Foreground" Value="White"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                    </Button>
 
                                     <!-- Quick Launch Button -->
                                     <Button Grid.Column="1"
