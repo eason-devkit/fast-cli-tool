@@ -18,11 +18,15 @@ namespace fast_cli_tool.ViewModels
     {
         private readonly DataService _dataService;
         private readonly LogService _logService;
+        private readonly SettingsService _settingsService;
         private PathItem? _selectedPathItem;
         private string _searchText = string.Empty;
         private ObservableCollection<PathItem> _allPathItems;
+        private bool _isSettingsViewActive;
 
         public ObservableCollection<PathItem> PathItems { get; set; }
+
+        public AppSettings AppSettings { get; }
 
         public PathItem? SelectedPathItem
         {
@@ -30,6 +34,21 @@ namespace fast_cli_tool.ViewModels
             set
             {
                 _selectedPathItem = value;
+                OnPropertyChanged();
+                // 當選擇路徑時，自動切換到 Path Details 模式
+                if (value != null)
+                {
+                    IsSettingsViewActive = false;
+                }
+            }
+        }
+
+        public bool IsSettingsViewActive
+        {
+            get => _isSettingsViewActive;
+            set
+            {
+                _isSettingsViewActive = value;
                 OnPropertyChanged();
             }
         }
@@ -50,11 +69,14 @@ namespace fast_cli_tool.ViewModels
         public ICommand ExecuteCommand { get; }
         public ICommand RemovePathCommand { get; }
         public ICommand OpenFolderCommand { get; }
+        public ICommand ShowSettingsCommand { get; }
 
         public MainViewModel()
         {
             _dataService = new DataService();
             _logService = new LogService();
+            _settingsService = new SettingsService();
+            AppSettings = _settingsService.LoadSettings();
 
             _logService.LogInfo("Application started");
 
@@ -71,11 +93,15 @@ namespace fast_cli_tool.ViewModels
             // 監聽集合變更
             _allPathItems.CollectionChanged += PathItems_CollectionChanged;
 
+            // 監聽設定變更以自動儲存
+            AppSettings.PropertyChanged += AppSettings_PropertyChanged;
+
             AddPathCommand = new RelayCommand(AddPath);
             SelectPathCommand = new RelayCommand<PathItem>(SelectPath);
             ExecuteCommand = new RelayCommand<PathItem>(Execute);
             RemovePathCommand = new RelayCommand<PathItem>(RemovePath);
             OpenFolderCommand = new RelayCommand<PathItem>(OpenFolder);
+            ShowSettingsCommand = new RelayCommand(ShowSettings);
         }
 
         private void PathItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -116,6 +142,34 @@ namespace fast_cli_tool.ViewModels
             catch (Exception ex)
             {
                 _logService.LogError($"Error saving paths after property change", ex);
+            }
+        }
+
+        private void AppSettings_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            // 當設定變更時，自動保存
+            try
+            {
+                _settingsService.SaveSettings(AppSettings);
+                _logService.LogInfo($"Settings property '{e.PropertyName}' changed, settings saved");
+            }
+            catch (Exception ex)
+            {
+                _logService.LogError($"Error saving settings after property change", ex);
+            }
+        }
+
+        private void ShowSettings()
+        {
+            try
+            {
+                _logService.LogInfo("Showing settings view");
+                IsSettingsViewActive = true;
+                SelectedPathItem = null; // 清除路徑選擇
+            }
+            catch (Exception ex)
+            {
+                _logService.LogError("Error showing settings", ex);
             }
         }
 
@@ -166,7 +220,8 @@ namespace fast_cli_tool.ViewModels
                     var pathItem = new PathItem
                     {
                         Name = newName,
-                        FullPath = fullPath
+                        FullPath = fullPath,
+                        SelectedCli = AppSettings.DefaultCliCommand
                     };
 
                     _allPathItems.Add(pathItem);
@@ -201,7 +256,7 @@ namespace fast_cli_tool.ViewModels
 
             try
             {
-                var cliCommand = pathItem.SelectedCli ?? "gemini.cmd";
+                var cliCommand = pathItem.SelectedCli ?? AppSettings.DefaultCliCommand;
                 _logService.LogInfo($"Executing {cliCommand} in: {pathItem.FullPath}");
                 Process.Start(new ProcessStartInfo
                 {
