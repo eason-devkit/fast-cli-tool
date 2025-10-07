@@ -70,6 +70,7 @@ namespace fast_cli_tool.ViewModels
         public ICommand RemovePathCommand { get; }
         public ICommand OpenFolderCommand { get; }
         public ICommand ShowSettingsCommand { get; }
+        public ICommand ShowPathDetailsCommand { get; }
 
         public MainViewModel()
         {
@@ -102,6 +103,7 @@ namespace fast_cli_tool.ViewModels
             RemovePathCommand = new RelayCommand<PathItem>(RemovePath);
             OpenFolderCommand = new RelayCommand<PathItem>(OpenFolder);
             ShowSettingsCommand = new RelayCommand(ShowSettings);
+            ShowPathDetailsCommand = new RelayCommand(ShowPathDetails);
         }
 
         private void PathItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -165,11 +167,23 @@ namespace fast_cli_tool.ViewModels
             {
                 _logService.LogInfo("Showing settings view");
                 IsSettingsViewActive = true;
-                SelectedPathItem = null; // 清除路徑選擇
             }
             catch (Exception ex)
             {
                 _logService.LogError("Error showing settings", ex);
+            }
+        }
+
+        private void ShowPathDetails()
+        {
+            try
+            {
+                _logService.LogInfo("Showing path details view");
+                IsSettingsViewActive = false;
+            }
+            catch (Exception ex)
+            {
+                _logService.LogError("Error showing path details", ex);
             }
         }
 
