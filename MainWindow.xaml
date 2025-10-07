@@ -11,7 +11,7 @@
         FontFamily="Consolas"
         WindowStyle="SingleBorderWindow"
         ResizeMode="CanResize"
-        Icon="pack://application:,,,/pic/tv4az-x8e0s-001.ico">
+        Icon="pack://application:,,,/pic/icon_result_256.ico">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="32"
                       ResizeBorderThickness="5"
@@ -228,7 +228,7 @@
 
                     <!-- App Icon and Title -->
                     <StackPanel Grid.Column="0" Orientation="Horizontal" Margin="10,0">
-                        <Image Source="pack://application:,,,/pic/tv4az-x8e0s-001.ico" Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,8,0" RenderOptions.BitmapScalingMode="HighQuality"/>
+                        <Image Source="pack://application:,,,/pic/icon_result_256.ico" Width="16" Height="16" VerticalAlignment="Center" Margin="0,0,8,0" RenderOptions.BitmapScalingMode="HighQuality"/>
                         <TextBlock Text="Fast CLI Tool"
                                    Foreground="White"
                                    FontSize="13"

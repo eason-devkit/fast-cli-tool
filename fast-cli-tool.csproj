@@ -7,11 +7,11 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-    <ApplicationIcon>pic\tv4az-x8e0s-001.ico</ApplicationIcon>
+    <ApplicationIcon>pic\icon_result_256.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <Resource Include="pic\tv4az-x8e0s-001.ico" />
+    <Resource Include="pic\icon_result_256.ico" />
   </ItemGroup>
 
 </Project>
