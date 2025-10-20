@@ -67,6 +67,7 @@ namespace fast_cli_tool.ViewModels
         public ICommand AddPathCommand { get; }
         public ICommand SelectPathCommand { get; }
         public ICommand ExecuteCommand { get; }
+        public ICommand ExecuteCustomCommandCommand { get; }
         public ICommand RemovePathCommand { get; }
         public ICommand OpenFolderCommand { get; }
         public ICommand ShowSettingsCommand { get; }
@@ -100,6 +101,7 @@ namespace fast_cli_tool.ViewModels
             AddPathCommand = new RelayCommand(AddPath);
             SelectPathCommand = new RelayCommand<PathItem>(SelectPath);
             ExecuteCommand = new RelayCommand<PathItem>(Execute);
+            ExecuteCustomCommandCommand = new RelayCommand<PathItem>(ExecuteCustomCommand);
             RemovePathCommand = new RelayCommand<PathItem>(RemovePath);
             OpenFolderCommand = new RelayCommand<PathItem>(OpenFolder);
             ShowSettingsCommand = new RelayCommand(ShowSettings);
@@ -286,6 +288,44 @@ namespace fast_cli_tool.ViewModels
                 _logService.LogError($"Error executing command in {pathItem.FullPath}", ex);
                 System.Windows.MessageBox.Show(
                     $"Error executing command: {ex.Message}\n\nCheck log file at:\n{_logService.GetLogFilePath()}",
+                    "Error",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error
+                );
+            }
+        }
+
+        private void ExecuteCustomCommand(PathItem pathItem)
+        {
+            if (pathItem == null || !Directory.Exists(pathItem.FullPath))
+            {
+                _logService.LogWarning($"Cannot execute custom command - invalid path item");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(pathItem.CustomCommand))
+            {
+                _logService.LogWarning($"Cannot execute custom command - command is empty");
+                return;
+            }
+
+            try
+            {
+                _logService.LogInfo($"Executing custom command '{pathItem.CustomCommand}' in: {pathItem.FullPath}");
+                Process.Start(new ProcessStartInfo
+                {
+                    FileName = "cmd.exe",
+                    Arguments = $"/k cd /d \"{pathItem.FullPath}\" && {pathItem.CustomCommand}",
+                    UseShellExecute = true,
+                    CreateNoWindow = false
+                });
+                _logService.LogInfo("Custom command executed successfully");
+            }
+            catch (Exception ex)
+            {
+                _logService.LogError($"Error executing custom command in {pathItem.FullPath}", ex);
+                System.Windows.MessageBox.Show(
+                    $"Error executing custom command: {ex.Message}\n\nCheck log file at:\n{_logService.GetLogFilePath()}",
                     "Error",
                     System.Windows.MessageBoxButton.OK,
                     System.Windows.MessageBoxImage.Error

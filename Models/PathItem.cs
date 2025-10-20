@@ -9,6 +9,7 @@ namespace fast_cli_tool.Models
         private string _name;
         private string _fullPath;
         private string _selectedCli;
+        private string _customCommand;
 
         public string Name
         {
@@ -36,6 +37,16 @@ namespace fast_cli_tool.Models
             set
             {
                 _selectedCli = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public string CustomCommand
+        {
+            get => _customCommand;
+            set
+            {
+                _customCommand = value;
                 OnPropertyChanged();
             }
         }
