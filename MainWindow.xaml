@@ -609,9 +609,10 @@
                     </Border>
 
                     <!-- Content Area -->
-                    <Grid Grid.Row="1" Margin="20">
-                        <!-- No Selection Placeholder -->
-                        <TextBlock Text="Select a path to view details or open Settings"
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <Grid Margin="20">
+                            <!-- No Selection Placeholder -->
+                            <TextBlock Text="Select a path to view details or open Settings"
                                    Foreground="{StaticResource TextColor}"
                                    FontSize="16"
                                    HorizontalAlignment="Center"
@@ -887,11 +888,39 @@
 
                         <!-- Custom Commands -->
                         <StackPanel Margin="0,0,0,20">
-                            <TextBlock Text="Custom Commands"
-                                       Foreground="{StaticResource TextColor}"
-                                       FontSize="13"
-                                       FontWeight="Medium"
-                                       Margin="0,0,0,10"/>
+                            <!-- Header with Add Button -->
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+
+                                <TextBlock Grid.Column="0"
+                                           Text="Custom Commands"
+                                           Foreground="{StaticResource TextColor}"
+                                           FontSize="13"
+                                           FontWeight="Medium"
+                                           VerticalAlignment="Center"/>
+
+                                <Button Grid.Column="1"
+                                        Command="{Binding StartAddCommandCommand}"
+                                        Content="+ Add"
+                                        Background="#007ACC"
+                                        Foreground="White"
+                                        Padding="10,6"
+                                        FontSize="11">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Visibility" Value="Visible"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding IsAddingCommand}" Value="True">
+                                                    <Setter Property="Visibility" Value="Collapsed"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                            </Grid>
 
                             <!-- Command List -->
                             <ItemsControl ItemsSource="{Binding SelectedPathItem.CustomCommands}">
@@ -950,21 +979,6 @@
                                 <Button Grid.Column="2" Command="{Binding CancelAddCommandCommand}"
                                         Content="✕" Background="#6C757D" Foreground="White" Padding="12,8"/>
                             </Grid>
-
-                            <!-- Add Button -->
-                            <Button Command="{Binding StartAddCommandCommand}" Margin="0,8,0,0"
-                                    Content="+ Add Command" Background="#007ACC" Foreground="White" Padding="12,8">
-                                <Button.Style>
-                                    <Style TargetType="Button">
-                                        <Setter Property="Visibility" Value="Visible"/>
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding IsAddingCommand}" Value="True">
-                                                <Setter Property="Visibility" Value="Collapsed"/>
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </Button.Style>
-                            </Button>
 
                             <TextBlock Text="ℹ️ Execute custom commands in this path's directory (CMD window will remain open)"
                                        Foreground="{StaticResource AccentColor}"
@@ -1156,7 +1170,8 @@
                                    Opacity="0.8"
                                    Margin="0,10,0,0"/>
                     </StackPanel>
-                    </Grid>
+                        </Grid>
+                    </ScrollViewer>
                 </Grid>
             </Border>
             </Grid>
