@@ -968,7 +968,7 @@
                                                     Background="#28A745"
                                                     Foreground="White"
                                                     BorderThickness="0"
-                                                    Padding="12,8"
+                                                    Padding="16,8"
                                                     Margin="0,0,4,0"
                                                     Cursor="Hand"
                                                     ToolTip="Execute Command">
@@ -980,11 +980,17 @@
                                                                     <Border Background="{TemplateBinding Background}"
                                                                             CornerRadius="4"
                                                                             Padding="{TemplateBinding Padding}">
-                                                                        <TextBlock Text="▶"
-                                                                                   FontSize="10"
-                                                                                   Foreground="White"
-                                                                                   VerticalAlignment="Center"
-                                                                                   HorizontalAlignment="Center"/>
+                                                                        <StackPanel Orientation="Horizontal">
+                                                                            <TextBlock Text="▶"
+                                                                                       FontSize="10"
+                                                                                       Margin="0,0,6,0"
+                                                                                       VerticalAlignment="Center"/>
+                                                                            <TextBlock Text="Run"
+                                                                                       FontSize="12"
+                                                                                       FontWeight="SemiBold"
+                                                                                       Foreground="{TemplateBinding Foreground}"
+                                                                                       VerticalAlignment="Center"/>
+                                                                        </StackPanel>
                                                                     </Border>
                                                                     <ControlTemplate.Triggers>
                                                                         <Trigger Property="IsMouseOver" Value="True">
