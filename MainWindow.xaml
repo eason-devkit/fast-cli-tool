@@ -904,14 +904,38 @@
 
                                 <Button Grid.Column="1"
                                         Command="{Binding StartAddCommandCommand}"
-                                        Content="+ Add"
                                         Background="#007ACC"
                                         Foreground="White"
-                                        Padding="10,6"
-                                        FontSize="11">
+                                        BorderThickness="0"
+                                        Padding="12,6"
+                                        Cursor="Hand"
+                                        ToolTip="Add New Command">
                                     <Button.Style>
                                         <Style TargetType="Button">
                                             <Setter Property="Visibility" Value="Visible"/>
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}"
+                                                                CornerRadius="4"
+                                                                Padding="{TemplateBinding Padding}">
+                                                            <TextBlock Text="+ Add"
+                                                                       FontSize="11"
+                                                                       Foreground="{TemplateBinding Foreground}"
+                                                                       VerticalAlignment="Center"
+                                                                       HorizontalAlignment="Center"/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#005A9E"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsPressed" Value="True">
+                                                                <Setter Property="Background" Value="#004578"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
                                             <Style.Triggers>
                                                 <DataTrigger Binding="{Binding IsAddingCommand}" Value="True">
                                                     <Setter Property="Visibility" Value="Collapsed"/>
@@ -941,14 +965,79 @@
                                             <Button Grid.Column="1"
                                                     Command="{Binding DataContext.ExecuteCustomCommandCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                     CommandParameter="{Binding Mode=OneWay}"
-                                                    Content="▶" Background="#28A745" Foreground="White"
-                                                    Padding="12,8" Margin="0,0,4,0"/>
+                                                    Background="#28A745"
+                                                    Foreground="White"
+                                                    BorderThickness="0"
+                                                    Padding="12,8"
+                                                    Margin="0,0,4,0"
+                                                    Cursor="Hand"
+                                                    ToolTip="Execute Command">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="Button">
+                                                                    <Border Background="{TemplateBinding Background}"
+                                                                            CornerRadius="4"
+                                                                            Padding="{TemplateBinding Padding}">
+                                                                        <TextBlock Text="▶"
+                                                                                   FontSize="10"
+                                                                                   Foreground="White"
+                                                                                   VerticalAlignment="Center"
+                                                                                   HorizontalAlignment="Center"/>
+                                                                    </Border>
+                                                                    <ControlTemplate.Triggers>
+                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                            <Setter Property="Background" Value="#218838"/>
+                                                                        </Trigger>
+                                                                        <Trigger Property="IsPressed" Value="True">
+                                                                            <Setter Property="Background" Value="#1E7E34"/>
+                                                                        </Trigger>
+                                                                    </ControlTemplate.Triggers>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
 
                                             <Button Grid.Column="2"
                                                     Command="{Binding DataContext.RemoveCustomCommandCommand, RelativeSource={RelativeSource AncestorType=ItemsControl}}"
                                                     CommandParameter="{Binding Mode=OneWay}"
-                                                    Content="✕" Background="#DC3545" Foreground="White"
-                                                    Padding="12,8"/>
+                                                    Background="#DC3545"
+                                                    Foreground="White"
+                                                    BorderThickness="0"
+                                                    Padding="12,8"
+                                                    Cursor="Hand"
+                                                    ToolTip="Remove Command">
+                                                <Button.Style>
+                                                    <Style TargetType="Button">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate TargetType="Button">
+                                                                    <Border Background="{TemplateBinding Background}"
+                                                                            CornerRadius="4"
+                                                                            Padding="{TemplateBinding Padding}">
+                                                                        <TextBlock Text="✕"
+                                                                                   FontSize="10"
+                                                                                   Foreground="White"
+                                                                                   VerticalAlignment="Center"
+                                                                                   HorizontalAlignment="Center"/>
+                                                                    </Border>
+                                                                    <ControlTemplate.Triggers>
+                                                                        <Trigger Property="IsMouseOver" Value="True">
+                                                                            <Setter Property="Background" Value="#C82333"/>
+                                                                        </Trigger>
+                                                                        <Trigger Property="IsPressed" Value="True">
+                                                                            <Setter Property="Background" Value="#BD2130"/>
+                                                                        </Trigger>
+                                                                    </ControlTemplate.Triggers>
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </Style>
+                                                </Button.Style>
+                                            </Button>
                                         </Grid>
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
@@ -974,10 +1063,79 @@
                                 <TextBox Grid.Column="0" Text="{Binding NewCommandText, UpdateSourceTrigger=PropertyChanged}"
                                          Background="#2D2D30" Foreground="White" BorderBrush="#007ACC"
                                          Padding="12,8" FontSize="12" Margin="0,0,8,0"/>
-                                <Button Grid.Column="1" Command="{Binding ConfirmAddCommandCommand}"
-                                        Content="✓" Background="#28A745" Foreground="White" Padding="12,8" Margin="0,0,4,0"/>
-                                <Button Grid.Column="2" Command="{Binding CancelAddCommandCommand}"
-                                        Content="✕" Background="#6C757D" Foreground="White" Padding="12,8"/>
+                                <Button Grid.Column="1"
+                                        Command="{Binding ConfirmAddCommandCommand}"
+                                        Background="#28A745"
+                                        Foreground="White"
+                                        BorderThickness="0"
+                                        Padding="12,8"
+                                        Margin="0,0,4,0"
+                                        Cursor="Hand"
+                                        ToolTip="Confirm Add">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}"
+                                                                CornerRadius="4"
+                                                                Padding="{TemplateBinding Padding}">
+                                                            <TextBlock Text="✓"
+                                                                       FontSize="12"
+                                                                       Foreground="White"
+                                                                       VerticalAlignment="Center"
+                                                                       HorizontalAlignment="Center"/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#218838"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsPressed" Value="True">
+                                                                <Setter Property="Background" Value="#1E7E34"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
+                                <Button Grid.Column="2"
+                                        Command="{Binding CancelAddCommandCommand}"
+                                        Background="#6C757D"
+                                        Foreground="White"
+                                        BorderThickness="0"
+                                        Padding="12,8"
+                                        Cursor="Hand"
+                                        ToolTip="Cancel">
+                                    <Button.Style>
+                                        <Style TargetType="Button">
+                                            <Setter Property="Template">
+                                                <Setter.Value>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border Background="{TemplateBinding Background}"
+                                                                CornerRadius="4"
+                                                                Padding="{TemplateBinding Padding}">
+                                                            <TextBlock Text="✕"
+                                                                       FontSize="10"
+                                                                       Foreground="White"
+                                                                       VerticalAlignment="Center"
+                                                                       HorizontalAlignment="Center"/>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter Property="Background" Value="#5A6268"/>
+                                                            </Trigger>
+                                                            <Trigger Property="IsPressed" Value="True">
+                                                                <Setter Property="Background" Value="#545B62"/>
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Setter.Value>
+                                            </Setter>
+                                        </Style>
+                                    </Button.Style>
+                                </Button>
                             </Grid>
 
                             <TextBlock Text="ℹ️ Execute custom commands in this path's directory (CMD window will remain open)"
