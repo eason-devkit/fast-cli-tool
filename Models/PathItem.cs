@@ -1,4 +1,6 @@
 
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
@@ -9,7 +11,7 @@ namespace fast_cli_tool.Models
         private string _name;
         private string _fullPath;
         private string _selectedCli;
-        private string _customCommand;
+        private ObservableCollection<string> _customCommands;
 
         public string Name
         {
@@ -41,12 +43,12 @@ namespace fast_cli_tool.Models
             }
         }
 
-        public string CustomCommand
+        public ObservableCollection<string> CustomCommands
         {
-            get => _customCommand;
+            get => _customCommands ?? new ObservableCollection<string>();
             set
             {
-                _customCommand = value;
+                _customCommands = value;
                 OnPropertyChanged();
             }
         }

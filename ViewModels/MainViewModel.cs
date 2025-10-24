@@ -23,6 +23,8 @@ namespace fast_cli_tool.ViewModels
         private string _searchText = string.Empty;
         private ObservableCollection<PathItem> _allPathItems;
         private bool _isSettingsViewActive;
+        private string _newCommandText = string.Empty;
+        private bool _isAddingCommand;
 
         public ObservableCollection<PathItem> PathItems { get; set; }
 
@@ -64,6 +66,26 @@ namespace fast_cli_tool.ViewModels
             }
         }
 
+        public string NewCommandText
+        {
+            get => _newCommandText;
+            set
+            {
+                _newCommandText = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsAddingCommand
+        {
+            get => _isAddingCommand;
+            set
+            {
+                _isAddingCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
         public ICommand AddPathCommand { get; }
         public ICommand SelectPathCommand { get; }
         public ICommand ExecuteCommand { get; }
@@ -72,6 +94,10 @@ namespace fast_cli_tool.ViewModels
         public ICommand OpenFolderCommand { get; }
         public ICommand ShowSettingsCommand { get; }
         public ICommand ShowPathDetailsCommand { get; }
+        public ICommand StartAddCommandCommand { get; }
+        public ICommand ConfirmAddCommandCommand { get; }
+        public ICommand CancelAddCommandCommand { get; }
+        public ICommand RemoveCustomCommandCommand { get; }
 
         public MainViewModel()
         {
@@ -101,11 +127,15 @@ namespace fast_cli_tool.ViewModels
             AddPathCommand = new RelayCommand(AddPath);
             SelectPathCommand = new RelayCommand<PathItem>(SelectPath);
             ExecuteCommand = new RelayCommand<PathItem>(Execute);
-            ExecuteCustomCommandCommand = new RelayCommand<PathItem>(ExecuteCustomCommand);
+            ExecuteCustomCommandCommand = new RelayCommand<string>(ExecuteCustomCommand);
             RemovePathCommand = new RelayCommand<PathItem>(RemovePath);
             OpenFolderCommand = new RelayCommand<PathItem>(OpenFolder);
             ShowSettingsCommand = new RelayCommand(ShowSettings);
             ShowPathDetailsCommand = new RelayCommand(ShowPathDetails);
+            StartAddCommandCommand = new RelayCommand(StartAddCommand);
+            ConfirmAddCommandCommand = new RelayCommand(ConfirmAddCommand);
+            CancelAddCommandCommand = new RelayCommand(CancelAddCommand);
+            RemoveCustomCommandCommand = new RelayCommand<string>(RemoveCustomCommand);
         }
 
         private void PathItems_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)
@@ -295,15 +325,15 @@ namespace fast_cli_tool.ViewModels
             }
         }
 
-        private void ExecuteCustomCommand(PathItem pathItem)
+        private void ExecuteCustomCommand(string command)
         {
-            if (pathItem == null || !Directory.Exists(pathItem.FullPath))
+            if (SelectedPathItem == null || !Directory.Exists(SelectedPathItem.FullPath))
             {
                 _logService.LogWarning($"Cannot execute custom command - invalid path item");
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(pathItem.CustomCommand))
+            if (string.IsNullOrWhiteSpace(command))
             {
                 _logService.LogWarning($"Cannot execute custom command - command is empty");
                 return;
@@ -311,11 +341,11 @@ namespace fast_cli_tool.ViewModels
 
             try
             {
-                _logService.LogInfo($"Executing custom command '{pathItem.CustomCommand}' in: {pathItem.FullPath}");
+                _logService.LogInfo($"Executing custom command '{command}' in: {SelectedPathItem.FullPath}");
                 Process.Start(new ProcessStartInfo
                 {
                     FileName = "cmd.exe",
-                    Arguments = $"/k cd /d \"{pathItem.FullPath}\" && {pathItem.CustomCommand}",
+                    Arguments = $"/k cd /d \"{SelectedPathItem.FullPath}\" && {command}",
                     UseShellExecute = true,
                     CreateNoWindow = false
                 });
@@ -323,9 +353,118 @@ namespace fast_cli_tool.ViewModels
             }
             catch (Exception ex)
             {
-                _logService.LogError($"Error executing custom command in {pathItem.FullPath}", ex);
+                _logService.LogError($"Error executing custom command in {SelectedPathItem.FullPath}", ex);
                 System.Windows.MessageBox.Show(
                     $"Error executing custom command: {ex.Message}\n\nCheck log file at:\n{_logService.GetLogFilePath()}",
+                    "Error",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error
+                );
+            }
+        }
+
+        private void StartAddCommand()
+        {
+            try
+            {
+                _logService.LogInfo("Starting to add new custom command");
+                IsAddingCommand = true;
+                NewCommandText = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                _logService.LogError("Error starting add command", ex);
+            }
+        }
+
+        private void ConfirmAddCommand()
+        {
+            if (SelectedPathItem == null)
+            {
+                _logService.LogWarning("Cannot add command - no path item selected");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(NewCommandText))
+            {
+                _logService.LogWarning("Cannot add command - command text is empty");
+                CancelAddCommand();
+                return;
+            }
+
+            try
+            {
+                _logService.LogInfo($"Adding custom command: {NewCommandText}");
+
+                if (SelectedPathItem.CustomCommands == null)
+                {
+                    SelectedPathItem.CustomCommands = new System.Collections.ObjectModel.ObservableCollection<string>();
+                }
+
+                SelectedPathItem.CustomCommands.Add(NewCommandText);
+
+                _dataService.SavePaths(_allPathItems);
+                _logService.LogInfo("Custom command added successfully");
+
+                IsAddingCommand = false;
+                NewCommandText = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                _logService.LogError("Error adding custom command", ex);
+                System.Windows.MessageBox.Show(
+                    $"Error adding command: {ex.Message}\n\nCheck log file at:\n{_logService.GetLogFilePath()}",
+                    "Error",
+                    System.Windows.MessageBoxButton.OK,
+                    System.Windows.MessageBoxImage.Error
+                );
+            }
+        }
+
+        private void CancelAddCommand()
+        {
+            try
+            {
+                _logService.LogInfo("Cancelled adding custom command");
+                IsAddingCommand = false;
+                NewCommandText = string.Empty;
+            }
+            catch (Exception ex)
+            {
+                _logService.LogError("Error cancelling add command", ex);
+            }
+        }
+
+        private void RemoveCustomCommand(string command)
+        {
+            if (SelectedPathItem == null)
+            {
+                _logService.LogWarning("Cannot remove command - no path item selected");
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(command))
+            {
+                _logService.LogWarning("Cannot remove command - command is empty");
+                return;
+            }
+
+            try
+            {
+                _logService.LogInfo($"Removing custom command: {command}");
+
+                if (SelectedPathItem.CustomCommands != null && SelectedPathItem.CustomCommands.Contains(command))
+                {
+                    SelectedPathItem.CustomCommands.Remove(command);
+                    _dataService.SavePaths(_allPathItems);
+                    _logService.LogInfo("Custom command removed successfully");
+                }
+            }
+            catch (Exception ex)
+            {
+                _logService.LogError("Error removing custom command", ex);
+                System.Windows.MessageBox.Show(
+                    $"Error removing command: {ex.Message}\n\nCheck log file at:\n{_logService.GetLogFilePath()}",
                     "Error",
                     System.Windows.MessageBoxButton.OK,
                     System.Windows.MessageBoxImage.Error
