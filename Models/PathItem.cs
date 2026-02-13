@@ -45,7 +45,7 @@ namespace fast_cli_tool.Models
 
         public ObservableCollection<string> CustomCommands
         {
-            get => _customCommands ?? new ObservableCollection<string>();
+            get => _customCommands ??= new ObservableCollection<string>();
             set
             {
                 _customCommands = value;
