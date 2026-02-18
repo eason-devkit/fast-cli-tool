@@ -1,36 +1,36 @@
 # Fast CLI Tool
 
-A Windows desktop app for quickly launching AI CLI tools (e.g. Claude Code) in your project directories.
+一款 Windows 桌面工具，用於快速在專案目錄中啟動 AI CLI 工具（如 Claude Code）。
 
 ![screenshot](pic/Snipaste_2025-10-06_20-40-33.png)
 
-## Features
+## 功能
 
-- **Path Management** — Add and organize your project folders
-- **Quick Launch** — Open AI CLI tools (e.g. `claude.cmd`) directly in any project path
-- **Custom Commands** — Define multiple custom commands per project (runs via `cmd.exe`)
-- **Search** — Instantly filter folders by name
-- **Settings** — Configure the default CLI command
-- **Auto Save** — All changes are persisted automatically
+- **路徑管理** — 新增、移除專案資料夾
+- **快速啟動** — 在指定路徑下直接開啟 AI CLI 工具（如 `claude.cmd`）
+- **自訂指令** — 每個專案可設定多組自訂命令（透過 `cmd.exe` 執行）
+- **搜尋過濾** — 即時依資料夾名稱篩選
+- **設定** — 可調整預設的 CLI 命令
+- **自動儲存** — 所有變更自動持久化
 
-## Tech Stack
+## 技術棧
 
 - .NET 9.0 / WPF
-- MVVM architecture
-- Dark theme (VS Code style)
+- MVVM 架構
+- 深色主題（VS Code 風格）
 
-## Build
+## 建置
 
-Requires [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0).
+需要 [.NET 9.0 SDK](https://dotnet.microsoft.com/download/dotnet/9.0)。
 
 ```bash
-# Debug build
+# 開發建置
 dotnet build
 
-# Publish as single exe (self-contained)
+# 發佈為單一執行檔（自包含）
 dotnet publish -c Release -r win-x64 --self-contained -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -o bin/publish-single
 ```
 
-## License
+## 授權
 
 [MIT](LICENSE)
