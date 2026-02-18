@@ -478,6 +478,15 @@ namespace fast_cli_tool.ViewModels
 
             try
             {
+                var result = System.Windows.MessageBox.Show(
+                    $"確定要移除「{pathItem.Name}」嗎？",
+                    "確認刪除",
+                    System.Windows.MessageBoxButton.YesNo,
+                    System.Windows.MessageBoxImage.Question
+                );
+
+                if (result != System.Windows.MessageBoxResult.Yes) return;
+
                 _logService.LogInfo($"Removing path: {pathItem.FullPath}");
                 _allPathItems.Remove(pathItem);
                 _dataService.SavePaths(_allPathItems);
