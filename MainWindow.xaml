@@ -748,9 +748,9 @@
                                       Foreground="White"
                                       BorderBrush="#007ACC"
                                       BorderThickness="1">
-                                <ComboBoxItem Content="claude.cmd"/>
-                                <ComboBoxItem Content="gemini.cmd"/>
-                                <ComboBoxItem Content="codex.cmd"/>
+                                <ComboBoxItem Content="claude"/>
+                                <ComboBoxItem Content="gemini"/>
+                                <ComboBoxItem Content="codex"/>
                                 <ComboBox.Style>
                                     <Style TargetType="ComboBox">
                                         <Setter Property="Template">
@@ -1203,9 +1203,9 @@
                                       Foreground="White"
                                       BorderBrush="#007ACC"
                                       BorderThickness="1">
-                                <ComboBoxItem Content="claude.cmd"/>
-                                <ComboBoxItem Content="gemini.cmd"/>
-                                <ComboBoxItem Content="codex.cmd"/>
+                                <ComboBoxItem Content="claude"/>
+                                <ComboBoxItem Content="gemini"/>
+                                <ComboBoxItem Content="codex"/>
                                 <ComboBox.Style>
                                     <Style TargetType="ComboBox">
                                         <Setter Property="Template">

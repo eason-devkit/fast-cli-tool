@@ -6,7 +6,7 @@ namespace fast_cli_tool.Models
 {
     public class AppSettings : INotifyPropertyChanged
     {
-        private string _defaultCliCommand = "claude.cmd";
+        private string _defaultCliCommand = "claude";
 
         public string DefaultCliCommand
         {
