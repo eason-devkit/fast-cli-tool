@@ -426,3 +426,9 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Allow .claude skills (override [Rr]elease/ rule)
+!.claude/
+!.claude/skills/
+!.claude/skills/release/
+!.claude/skills/release/**
